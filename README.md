@@ -25,13 +25,20 @@ Works on **macOS** and **iOS**.
 
 ## Quick Start (Run from Source)
 
-### Option 1: Using Hatch (Recommended)
+### Option 1: Bootstrap Script (Recommended)
 
 ```bash
-# Install Hatch if you don't have it
-pip install hatch
+# Clone the repository
+git clone https://github.com/yourusername/digital-mirror.git
+cd digital-mirror
 
-# Run the app (Hatch creates the environment automatically)
+# Run bootstrap (creates venv, installs everything)
+python3 scripts/bootstrap.py
+
+# Activate the environment
+source .venv/bin/activate
+
+# Run the app
 hatch run run
 ```
 
@@ -44,9 +51,11 @@ source .venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
+pip install hatch pyinstaller pillow
 
 # Run the app
 python digital_mirror.py
+# or: hatch run run
 ```
 
 ---

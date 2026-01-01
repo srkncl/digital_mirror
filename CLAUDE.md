@@ -5,14 +5,23 @@ Commands for Claude Code to build and manage Digital Mirror.
 ## Quick Start (Fresh Clone)
 
 ```bash
-# Option 1: Using Hatch (recommended)
-pip install hatch
-hatch run run
+# Bootstrap (creates venv, installs everything)
+python3 scripts/bootstrap.py
 
-# Option 2: Manual setup
+# Activate environment
+source .venv/bin/activate
+
+# Run the app
+hatch run run
+```
+
+### Manual Setup (Alternative)
+
+```bash
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+pip install hatch pyinstaller pillow
 python digital_mirror.py
 ```
 
