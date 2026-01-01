@@ -5,7 +5,7 @@ Uses PySide6 (Qt) for UI and OpenCV for camera access
 Works on macOS and iOS
 """
 
-VERSION = "1.1.0"
+VERSION = "1.2.0"
 
 import sys
 import platform

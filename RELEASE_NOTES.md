@@ -1,5 +1,20 @@
 # Release Notes
 
+## v1.2.0 (2026-01-01)
+
+### New Features
+- **WhatsApp Sticker Mode** - Create stickers with transparent background
+  - Face-only segmentation using MediaPipe AI
+  - Automatic white outline for sticker effect
+  - Mask editing tool to refine sticker outline
+  - Export as WebP (512x512, <500KB) for WhatsApp
+
+### Improvements
+- Simplified icon-only toolbar with tooltips
+- Default mask edit mode set to erase for easier refinement
+
+---
+
 ## v1.1.0 (2026-01-01)
 
 ### New Features
