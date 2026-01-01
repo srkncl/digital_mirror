@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="#2a2a2a"/>
+  
+  <!-- Mirror frame -->
+  <rect x="100" y="80" width="312" height="352" rx="40" fill="#505058"/>
+  
+  <!-- Mirror surface -->
+  <rect x="120" y="100" width="272" height="312" rx="30" fill="#c8daf0"/>
+  
+  <!-- Highlight -->
+  <ellipse cx="200" cy="180" rx="60" ry="80" fill="white" opacity="0.4"/>
+  
+  <!-- Small reflection dots -->
+  <circle cx="350" cy="350" r="15" fill="white" opacity="0.2"/>
+</svg>
