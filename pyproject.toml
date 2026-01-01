@@ -57,14 +57,7 @@ build = [
     "pyinstaller DigitalMirror.spec --noconfirm",
     "codesign --force --deep --sign - 'dist/Digital Mirror.app'",
 ]
-dmg = [
-    "rm -rf dist/dmg",
-    "mkdir -p dist/dmg",
-    "cp -R 'dist/Digital Mirror.app' dist/dmg/",
-    "ln -s /Applications dist/dmg/Applications",
-    "python -c \"from digital_mirror import VERSION; import subprocess; subprocess.run(['hdiutil', 'create', '-volname', 'Digital Mirror', '-srcfolder', 'dist/dmg', '-ov', '-format', 'UDZO', f'dist/DigitalMirror-{VERSION}.dmg'])\"",
-    "rm -rf dist/dmg",
-]
+dmg = "python scripts/create_dmg.py"
 release = [
     "build",
     "dmg",
