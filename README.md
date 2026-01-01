@@ -128,10 +128,10 @@ DigitalMirror/
 ├── requirements.txt       # Python dependencies
 ├── DigitalMirror.spec     # PyInstaller configuration
 ├── entitlements.plist     # macOS entitlements (camera access)
-├── create_icon.py         # Icon generator script
 ├── scripts/
 │   ├── bootstrap.py       # Environment setup script
-│   └── create_dmg.py      # DMG creation script
+│   ├── create_dmg.py      # DMG creation script
+│   └── create_icon.py     # Icon generator script
 ├── assets/                # Generated assets
 │   ├── icon.iconset/      # Icon images
 │   └── icon.icns          # macOS icon file

@@ -96,7 +96,7 @@ git push origin vX.Y.Z
 | `digital_mirror.py` | Main application code |
 | `pyproject.toml` | Project config and Hatch scripts |
 | `requirements.txt` | Python dependencies (pip) |
-| `create_icon.py` | Icon generator |
+| `scripts/create_icon.py` | Icon generator |
 | `DigitalMirror.spec` | PyInstaller configuration |
 | `entitlements.plist` | macOS entitlements (camera) |
 | `scripts/bootstrap.py` | Environment setup script |
