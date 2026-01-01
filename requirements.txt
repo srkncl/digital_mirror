@@ -4,3 +4,6 @@ numpy>=1.24.0
 
 # Camera device name detection (macOS/iOS)
 pyobjc-framework-AVFoundation>=10.0.0
+
+# Background removal (MediaPipe - fast, <1 second)
+mediapipe>=0.10.0
