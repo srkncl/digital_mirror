@@ -1,6 +1,6 @@
 # Release Notes
 
-## v1.1.0 (2025-01-01)
+## v1.1.0 (2026-01-01)
 
 ### New Features
 - **Zoom up to 5x** - Extended zoom range from 3x to 5x

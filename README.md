@@ -62,8 +62,6 @@ python digital_mirror.py
 
 ## Build macOS App (.app + .dmg)
 
-### Using Hatch (Recommended)
-
 ```bash
 # Build the app bundle
 hatch run build
@@ -73,13 +71,6 @@ hatch run dmg
 
 # Or do both at once
 hatch run release
-```
-
-### Using Build Script
-
-```bash
-chmod +x build_macos.sh
-./build_macos.sh
 ```
 
 **Output:**
@@ -138,8 +129,8 @@ DigitalMirror/
 ├── DigitalMirror.spec     # PyInstaller configuration
 ├── entitlements.plist     # macOS entitlements (camera access)
 ├── create_icon.py         # Icon generator script
-├── build_macos.sh         # Automated build script
 ├── scripts/
+│   ├── bootstrap.py       # Environment setup script
 │   └── create_dmg.py      # DMG creation script
 ├── assets/                # Generated assets
 │   ├── icon.iconset/      # Icon images

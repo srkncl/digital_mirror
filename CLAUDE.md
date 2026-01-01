@@ -60,12 +60,6 @@ hatch run dmg
 hatch run release
 ```
 
-Or use the shell script:
-
-```bash
-chmod +x build_macos.sh && ./build_macos.sh
-```
-
 ## Version Bump Checklist
 
 Update version in these files:
@@ -74,7 +68,6 @@ Update version in these files:
 |------|----------|
 | `digital_mirror.py` | `VERSION = "X.Y.Z"` (line 8) |
 | `pyproject.toml` | `version = "X.Y.Z"` (line 6) |
-| `build_macos.sh` | `APP_VERSION="X.Y.Z"` (line 18) |
 | `RELEASE_NOTES.md` | Add new section at top |
 
 ## Release Commands
@@ -103,10 +96,10 @@ git push origin vX.Y.Z
 | `digital_mirror.py` | Main application code |
 | `pyproject.toml` | Project config and Hatch scripts |
 | `requirements.txt` | Python dependencies (pip) |
-| `build_macos.sh` | Automated build script |
 | `create_icon.py` | Icon generator |
 | `DigitalMirror.spec` | PyInstaller configuration |
 | `entitlements.plist` | macOS entitlements (camera) |
+| `scripts/bootstrap.py` | Environment setup script |
 | `scripts/create_dmg.py` | DMG creation script |
 | `RELEASE_NOTES.md` | Version history |
 | `RELEASING.md` | Detailed release instructions |

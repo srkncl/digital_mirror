@@ -20,9 +20,6 @@ VERSION = "X.Y.Z"
 
 # 2. Project config (pyproject.toml)
 version = "X.Y.Z"
-
-# 3. Build script (build_macos.sh)
-APP_VERSION="X.Y.Z"
 ```
 
 **Version format:** `MAJOR.MINOR.PATCH` (e.g., `1.2.0`)
@@ -91,10 +88,8 @@ git tag -a v1.2.0 -m "Release v1.2.0
 
 ### 6. Build Distribution Packages
 
-#### Option A: Using Hatch (Recommended)
-
 ```bash
-# Build the app bundle (creates fresh environment)
+# Build the app bundle
 hatch run build
 
 # Create DMG installer
@@ -107,33 +102,6 @@ hatch run release
 This creates:
 - `dist/Digital Mirror.app` - Application bundle
 - `dist/DigitalMirror-X.Y.Z.dmg` - DMG installer with Applications shortcut
-
-#### Option B: Using Build Script
-
-```bash
-chmod +x build_macos.sh
-./build_macos.sh
-```
-
-#### Option C: Manual Build
-
-```bash
-# Activate virtual environment
-source .venv/bin/activate
-
-# Build with PyInstaller
-pyinstaller DigitalMirror.spec --noconfirm
-
-# Sign the app (ad-hoc)
-codesign --force --deep --sign - "dist/Digital Mirror.app"
-
-# Create DMG with Applications shortcut
-mkdir -p dist/dmg
-cp -R "dist/Digital Mirror.app" dist/dmg/
-ln -s /Applications dist/dmg/Applications
-hdiutil create -volname "Digital Mirror" -srcfolder dist/dmg -ov -format UDZO "dist/DigitalMirror-X.Y.Z.dmg"
-rm -rf dist/dmg
-```
 
 ### 7. Verify the Build
 
@@ -180,14 +148,7 @@ git commit -m "Bump version to $VERSION"
 git tag -a "v$VERSION" -m "Release v$VERSION"
 
 # Build
-source .venv/bin/activate
-pyinstaller DigitalMirror.spec --noconfirm
-codesign --force --deep --sign - "dist/Digital Mirror.app"
-mkdir -p dist/dmg
-cp -R "dist/Digital Mirror.app" dist/dmg/
-ln -s /Applications dist/dmg/Applications
-hdiutil create -volname "Digital Mirror" -srcfolder dist/dmg -ov -format UDZO "dist/DigitalMirror-$VERSION.dmg"
-rm -rf dist/dmg
+hatch run release
 
 # Push
 git push origin main
@@ -200,7 +161,6 @@ git push origin "v$VERSION"
 |------|------------------|
 | `digital_mirror.py` | `VERSION = "X.Y.Z"` (line 8) |
 | `pyproject.toml` | `version = "X.Y.Z"` (line 6) |
-| `build_macos.sh` | `APP_VERSION="X.Y.Z"` (line 18) |
 | `RELEASE_NOTES.md` | Add new section at top |
 
 ## Hatch Commands Reference
