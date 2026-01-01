@@ -5,6 +5,8 @@ Uses PySide6 (Qt) for UI and OpenCV for camera access
 Works on macOS and iOS
 """
 
+VERSION = "1.1.0"
+
 import sys
 import platform
 import cv2
@@ -12,7 +14,7 @@ import numpy as np
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout,
     QHBoxLayout, QPushButton, QLabel, QComboBox, QFrame,
-    QStyledItemDelegate, QListView, QSlider
+    QStyledItemDelegate, QListView, QSlider, QMessageBox
 )
 from PySide6.QtCore import Qt, QTimer, QSize, QSettings, Signal
 from PySide6.QtGui import QImage, QPixmap, QIcon, QAction, QKeySequence, QNativeGestureEvent
@@ -540,7 +542,25 @@ class DigitalMirrorApp(QMainWindow):
             }
         """)
         controls_layout.addWidget(fullscreen_btn)
-        
+
+        # About button
+        about_btn = QPushButton("ℹ️ About")
+        about_btn.clicked.connect(self._show_about)
+        about_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #4a4a4a;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 4px;
+                font-size: 14px;
+            }
+            QPushButton:hover {
+                background-color: #5a5a5a;
+            }
+        """)
+        controls_layout.addWidget(about_btn)
+
         layout.addWidget(controls)
         
         # Apply dark theme
@@ -726,7 +746,25 @@ class DigitalMirrorApp(QMainWindow):
         """Exit fullscreen mode."""
         if self.isFullScreen():
             self.showNormal()
-    
+
+    def _show_about(self):
+        """Show the About dialog."""
+        about_text = f"""<h2>Digital Mirror</h2>
+<p>Version {VERSION}</p>
+<p>A camera mirror app for Apple platforms.</p>
+<p><b>Features:</b></p>
+<ul>
+<li>Real-time camera preview</li>
+<li>Mirror mode (horizontal flip)</li>
+<li>Zoom up to 5x with pinch gesture</li>
+<li>Brightness adjustment</li>
+<li>Freeze frame with pan support</li>
+<li>Fullscreen mode</li>
+</ul>
+<p>Built with Python, PySide6, and OpenCV.</p>
+"""
+        QMessageBox.about(self, "About Digital Mirror", about_text)
+
     def _load_settings(self):
         """Load saved settings."""
         # Camera

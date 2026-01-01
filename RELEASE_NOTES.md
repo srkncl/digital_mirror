@@ -1,6 +1,6 @@
 # Release Notes
 
-## v1.1.0 (2024-12-31)
+## v1.1.0 (2025-01-01)
 
 ### New Features
 - **Zoom up to 5x** - Extended zoom range from 3x to 5x
@@ -24,7 +24,7 @@
 
 ---
 
-## v1.0.0 (2024-12-31)
+## v1.0.0 (2025-12-31)
 
 ### Initial Release
 - Real-time camera preview
