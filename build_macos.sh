@@ -15,7 +15,7 @@ NC='\033[0m' # No Color
 
 # Configuration
 APP_NAME="Digital Mirror"
-APP_VERSION="1.0.0"
+APP_VERSION="1.1.0"
 BUNDLE_ID="com.digitalmirror.app"
 
 # Get script directory
