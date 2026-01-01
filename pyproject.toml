@@ -1,0 +1,148 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "digital-mirror"
+version = "1.1.0"
+description = "A camera mirror app for Apple platforms"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.9"
+keywords = ["camera", "mirror", "macos", "ios", "qt"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: MacOS X",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: MacOS",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia :: Video :: Capture",
+]
+dependencies = [
+    "PySide6>=6.5.0",
+    "opencv-python>=4.8.0",
+    "numpy>=1.24.0",
+    "pyobjc-framework-AVFoundation>=10.0.0",
+]
+
+[project.scripts]
+digital-mirror = "digital_mirror:main"
+
+[project.urls]
+Homepage = "https://github.com/yourusername/digital-mirror"
+Issues = "https://github.com/yourusername/digital-mirror/issues"
+
+# ============================================================================
+# Hatch Configuration
+# ============================================================================
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
+
+[tool.hatch.envs.default]
+description = "Default development environment"
+dependencies = [
+    "pyinstaller>=6.0.0",
+    "pillow>=10.0.0",
+]
+
+[tool.hatch.envs.default.scripts]
+run = "python digital_mirror.py"
+build = [
+    "pyinstaller DigitalMirror.spec --noconfirm",
+    "codesign --force --deep --sign - 'dist/Digital Mirror.app'",
+]
+dmg = [
+    "rm -rf dist/dmg",
+    "mkdir -p dist/dmg",
+    "cp -R 'dist/Digital Mirror.app' dist/dmg/",
+    "ln -s /Applications dist/dmg/Applications",
+    "python -c \"from digital_mirror import VERSION; import subprocess; subprocess.run(['hdiutil', 'create', '-volname', 'Digital Mirror', '-srcfolder', 'dist/dmg', '-ov', '-format', 'UDZO', f'dist/DigitalMirror-{VERSION}.dmg'])\"",
+    "rm -rf dist/dmg",
+]
+release = [
+    "build",
+    "dmg",
+]
+icon = "python create_icon.py && iconutil -c icns assets/icon.iconset -o assets/icon.icns"
+clean = "rm -rf build dist *.egg-info"
+
+# ============================================================================
+# Test Environment
+# ============================================================================
+
+[tool.hatch.envs.test]
+description = "Testing environment"
+dependencies = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-qt>=4.2.0",
+]
+
+[tool.hatch.envs.test.scripts]
+run = "pytest {args:tests}"
+cov = "pytest --cov=digital_mirror --cov-report=term-missing {args:tests}"
+
+# ============================================================================
+# Lint Environment
+# ============================================================================
+
+[tool.hatch.envs.lint]
+description = "Linting environment"
+detached = true
+dependencies = [
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+]
+
+[tool.hatch.envs.lint.scripts]
+check = [
+    "ruff check .",
+    "ruff format --check .",
+]
+fix = [
+    "ruff check --fix .",
+    "ruff format .",
+]
+typing = "mypy digital_mirror.py"
+all = [
+    "check",
+    "typing",
+]
+
+# ============================================================================
+# Tool Configuration
+# ============================================================================
+
+[tool.ruff]
+target-version = "py39"
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # Pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+]
+ignore = [
+    "E501",  # line too long (handled by formatter)
+]
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]

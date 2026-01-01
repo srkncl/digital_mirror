@@ -5,8 +5,8 @@ This guide covers how to create a new release of Digital Mirror.
 ## Prerequisites
 
 - macOS with Xcode Command Line Tools installed
-- Python 3.9+ with virtual environment
-- All dependencies installed (`pip install -r requirements.txt`)
+- Python 3.9+
+- Hatch installed (`pip install hatch` or `brew install hatch`)
 
 ## Release Checklist
 
@@ -18,10 +18,11 @@ Update the version in these files:
 # 1. Main application (digital_mirror.py)
 VERSION = "X.Y.Z"
 
-# 2. Build script (build_macos.sh)
-APP_VERSION="X.Y.Z"
+# 2. Project config (pyproject.toml)
+version = "X.Y.Z"
 
-# 3. PyInstaller spec (DigitalMirror.spec) - if version is referenced
+# 3. Build script (build_macos.sh)
+APP_VERSION="X.Y.Z"
 ```
 
 **Version format:** `MAJOR.MINOR.PATCH` (e.g., `1.2.0`)
@@ -54,9 +55,11 @@ Edit `RELEASE_NOTES.md` and add a new section at the top:
 ### 3. Test the Application
 
 ```bash
-# Run from source to verify functionality
-source .venv/bin/activate
-python digital_mirror.py
+# Run from source using Hatch (creates fresh environment automatically)
+hatch run run
+
+# Or run linting checks
+hatch run lint:check
 ```
 
 Verify:
@@ -88,18 +91,31 @@ git tag -a v1.2.0 -m "Release v1.2.0
 
 ### 6. Build Distribution Packages
 
-#### Option A: Using Build Script (Recommended)
+#### Option A: Using Hatch (Recommended)
 
 ```bash
-chmod +x build_macos.sh
-./build_macos.sh
+# Build the app bundle (creates fresh environment)
+hatch run build
+
+# Create DMG installer
+hatch run dmg
+
+# Or do both in one command
+hatch run release
 ```
 
 This creates:
 - `dist/Digital Mirror.app` - Application bundle
 - `dist/DigitalMirror-X.Y.Z.dmg` - DMG installer with Applications shortcut
 
-#### Option B: Manual Build
+#### Option B: Using Build Script
+
+```bash
+chmod +x build_macos.sh
+./build_macos.sh
+```
+
+#### Option C: Manual Build
 
 ```bash
 # Activate virtual environment
@@ -183,8 +199,24 @@ git push origin "v$VERSION"
 | File | Version Location |
 |------|------------------|
 | `digital_mirror.py` | `VERSION = "X.Y.Z"` (line 8) |
+| `pyproject.toml` | `version = "X.Y.Z"` (line 6) |
 | `build_macos.sh` | `APP_VERSION="X.Y.Z"` (line 18) |
 | `RELEASE_NOTES.md` | Add new section at top |
+
+## Hatch Commands Reference
+
+| Command | Description |
+|---------|-------------|
+| `hatch run run` | Run the app from source |
+| `hatch run build` | Build .app bundle |
+| `hatch run dmg` | Create DMG installer |
+| `hatch run release` | Build + create DMG |
+| `hatch run icon` | Generate app icon |
+| `hatch run clean` | Remove build artifacts |
+| `hatch run lint:check` | Run linting checks |
+| `hatch run lint:fix` | Auto-fix lint issues |
+| `hatch run test:run` | Run tests |
+| `hatch env prune` | Remove all Hatch environments |
 
 ## Distribution Notes
 
