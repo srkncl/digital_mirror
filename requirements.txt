@@ -3,12 +3,4 @@ opencv-python>=4.8.0
 numpy>=1.24.0
 
 # Camera device name detection (macOS/iOS)
-pyobjc-framework-AVFoundation>=12.0.0
-
-# Build dependencies (optional, for creating .app)
-# pyinstaller>=6.0.0
-# pillow>=10.0.0
-
-# iOS deployment (optional, for creating iOS app)
-# See: https://beeware.org/ for Toga/Briefcase iOS packaging
-# Or use pyto/pythonista for running Python directly on iOS
+pyobjc-framework-AVFoundation>=10.0.0

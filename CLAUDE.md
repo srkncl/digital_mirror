@@ -1,68 +1,90 @@
 # Claude Commands for Digital Mirror
 
-This document contains commands for Claude Code to build and release Digital Mirror.
+Commands for Claude Code to build and manage Digital Mirror.
 
-## Build Commands
+## Quick Start (Fresh Clone)
 
-### Build macOS App
-```
-Build the macOS .app bundle:
-1. Activate virtual environment: source .venv/bin/activate
-2. Install dependencies: pip install -r requirements.txt && pip install pyinstaller pillow
-3. Generate icon if needed: python create_icon.py && iconutil -c icns assets/icon.iconset -o assets/icon.icns
-4. Build with PyInstaller: pyinstaller DigitalMirror.spec
-5. Sign the app: codesign --force --deep --sign - "dist/Digital Mirror.app"
-```
+```bash
+# Option 1: Using Hatch (recommended)
+pip install hatch
+hatch run run
 
-### Build DMG Installer
-```
-Create DMG installer from the built app:
-hdiutil create -volname "Digital Mirror" -srcfolder "dist/Digital Mirror.app" -ov -format UDZO "dist/DigitalMirror-VERSION.dmg"
-```
-
-### Full Release Build
-```
-Run the automated build script:
-chmod +x build_macos.sh && ./build_macos.sh
-```
-
-## Release Commands
-
-### Create Release Commit
-```
-1. Update version number in RELEASE_NOTES.md
-2. Stage changes: git add .
-3. Commit with release message:
-   git commit -m "Release vX.Y.Z - [brief description]"
-4. Tag the release: git tag vX.Y.Z
-```
-
-### Version Bump Checklist
-- [ ] Update RELEASE_NOTES.md with new version section
-- [ ] Update version in DMG filename (build script or manual)
-- [ ] Commit all changes
-- [ ] Create git tag
-- [ ] Build DMG
-
-## Development Commands
-
-### Run from Source
-```
+# Option 2: Manual setup
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 python digital_mirror.py
 ```
 
-### Clean Build Artifacts
-```
-rm -rf build/ dist/ *.spec __pycache__/
+## Hatch Commands
+
+| Command | Description |
+|---------|-------------|
+| `hatch run run` | Run the app from source |
+| `hatch run build` | Build .app bundle |
+| `hatch run dmg` | Create DMG installer |
+| `hatch run release` | Build + create DMG |
+| `hatch run icon` | Generate app icon |
+| `hatch run clean` | Remove build artifacts |
+| `hatch run lint:check` | Run linting checks |
+| `hatch run lint:fix` | Auto-fix lint issues |
+| `hatch run test:run` | Run tests |
+| `hatch env prune` | Remove all Hatch environments |
+
+## Build Commands
+
+### Build macOS App (Hatch)
+
+```bash
+hatch run build
 ```
 
-### Regenerate Icon
+### Build DMG Installer
+
+```bash
+hatch run dmg
 ```
-python create_icon.py
-iconutil -c icns assets/icon.iconset -o assets/icon.icns
+
+### Full Release Build
+
+```bash
+hatch run release
+```
+
+Or use the shell script:
+
+```bash
+chmod +x build_macos.sh && ./build_macos.sh
+```
+
+## Version Bump Checklist
+
+Update version in these files:
+
+| File | Location |
+|------|----------|
+| `digital_mirror.py` | `VERSION = "X.Y.Z"` (line 8) |
+| `pyproject.toml` | `version = "X.Y.Z"` (line 6) |
+| `build_macos.sh` | `APP_VERSION="X.Y.Z"` (line 18) |
+| `RELEASE_NOTES.md` | Add new section at top |
+
+## Release Commands
+
+```bash
+# 1. Update versions (see checklist above)
+# 2. Update RELEASE_NOTES.md
+
+# 3. Commit and tag
+git add -A
+git commit -m "Bump version to X.Y.Z"
+git tag -a vX.Y.Z -m "Release vX.Y.Z"
+
+# 4. Build
+hatch run release
+
+# 5. Push
+git push origin main
+git push origin vX.Y.Z
 ```
 
 ## File Structure
@@ -70,12 +92,15 @@ iconutil -c icns assets/icon.iconset -o assets/icon.icns
 | File | Purpose |
 |------|---------|
 | `digital_mirror.py` | Main application code |
-| `requirements.txt` | Python dependencies |
+| `pyproject.toml` | Project config and Hatch scripts |
+| `requirements.txt` | Python dependencies (pip) |
 | `build_macos.sh` | Automated build script |
 | `create_icon.py` | Icon generator |
 | `DigitalMirror.spec` | PyInstaller configuration |
 | `entitlements.plist` | macOS entitlements (camera) |
+| `scripts/create_dmg.py` | DMG creation script |
 | `RELEASE_NOTES.md` | Version history |
+| `RELEASING.md` | Detailed release instructions |
 | `README.md` | User documentation |
 
 ## Notes
@@ -83,3 +108,4 @@ iconutil -c icns assets/icon.iconset -o assets/icon.icns
 - Always test the app before creating a release
 - DMG is ad-hoc signed (works for personal/internal use)
 - For App Store distribution, requires Apple Developer account
+- Hatch creates isolated environments automatically

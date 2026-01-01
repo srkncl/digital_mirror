@@ -25,22 +25,27 @@ Works on **macOS** and **iOS**.
 
 ## Quick Start (Run from Source)
 
-### 1. Create a virtual environment (recommended)
+### Option 1: Using Hatch (Recommended)
 
 ```bash
-python3 -m venv venv
-source venv/bin/activate
+# Install Hatch if you don't have it
+pip install hatch
+
+# Run the app (Hatch creates the environment automatically)
+hatch run run
 ```
 
-### 2. Install dependencies
+### Option 2: Manual Setup
 
 ```bash
+# Create virtual environment
+python3 -m venv .venv
+source .venv/bin/activate
+
+# Install dependencies
 pip install -r requirements.txt
-```
 
-### 3. Run the app
-
-```bash
+# Run the app
 python digital_mirror.py
 ```
 
@@ -48,49 +53,29 @@ python digital_mirror.py
 
 ## Build macOS App (.app + .dmg)
 
-### Automated Build (Recommended)
+### Using Hatch (Recommended)
 
-Run the build script - it handles everything:
+```bash
+# Build the app bundle
+hatch run build
+
+# Create DMG installer
+hatch run dmg
+
+# Or do both at once
+hatch run release
+```
+
+### Using Build Script
 
 ```bash
 chmod +x build_macos.sh
 ./build_macos.sh
 ```
 
-This will:
-1. Set up a virtual environment
-2. Install all dependencies
-3. Generate the app icon
-4. Build the `.app` bundle with PyInstaller
-5. Create a `.dmg` installer
-
 **Output:**
 - `dist/Digital Mirror.app` - The application bundle
-- `dist/DigitalMirror-1.0.0.dmg` - DMG installer
-
-### Manual Build Steps
-
-If you prefer to build manually:
-
-```bash
-# 1. Create and activate virtual environment
-python3 -m venv venv
-source venv/bin/activate
-
-# 2. Install dependencies
-pip install -r requirements.txt
-pip install pyinstaller pillow
-
-# 3. Generate icon
-python create_icon.py
-iconutil -c icns assets/icon.iconset -o assets/icon.icns
-
-# 4. Build with PyInstaller
-pyinstaller DigitalMirror.spec
-
-# 5. Sign the app (ad-hoc for local use)
-codesign --force --deep --sign - "dist/Digital Mirror.app"
-```
+- `dist/DigitalMirror-1.1.0.dmg` - DMG installer with Applications shortcut
 
 ### Installing the App
 
@@ -139,17 +124,22 @@ See [BeeWare documentation](https://beeware.org/) for details.
 ```
 DigitalMirror/
 ├── digital_mirror.py      # Main application code
+├── pyproject.toml         # Project config & Hatch scripts
 ├── requirements.txt       # Python dependencies
 ├── DigitalMirror.spec     # PyInstaller configuration
 ├── entitlements.plist     # macOS entitlements (camera access)
 ├── create_icon.py         # Icon generator script
 ├── build_macos.sh         # Automated build script
+├── scripts/
+│   └── create_dmg.py      # DMG creation script
 ├── assets/                # Generated assets
 │   ├── icon.iconset/      # Icon images
 │   └── icon.icns          # macOS icon file
-└── dist/                  # Build output
+├── RELEASING.md           # Release instructions
+├── RELEASE_NOTES.md       # Version history
+└── dist/                  # Build output (not in git)
     ├── Digital Mirror.app
-    └── DigitalMirror-1.0.0.dmg
+    └── DigitalMirror-X.Y.Z.dmg
 ```
 
 ---

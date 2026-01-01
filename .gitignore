@@ -38,9 +38,11 @@ ENV/
 .LSOverride
 
 # Build artifacts
-*.spec
 *.app
 *.dmg
+
+# Hatch
+.hatch/
 
 # Local settings
 *.local
