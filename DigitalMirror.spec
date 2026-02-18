@@ -19,17 +19,40 @@ if not icon_path.exists():
     icon_path = None  # PyInstaller will use default icon
     print("Note: icon.icns not found, using default icon")
 
+# Collect mediapipe native library and data files
+mediapipe_binaries = []
+mediapipe_datas = []
+try:
+    import mediapipe
+    mp_path = Path(mediapipe.__path__[0])
+    # The native C library that mediapipe.tasks.c loads at runtime
+    mp_dylib = mp_path / 'tasks' / 'c' / 'libmediapipe.dylib'
+    if mp_dylib.exists():
+        mediapipe_binaries.append((str(mp_dylib), 'mediapipe/tasks/c'))
+    # Data files (model graphs, label maps) used by various tasks
+    for pattern in ('**/*.tflite', '**/*.binarypb', '**/*.txt'):
+        for f in mp_path.glob(pattern):
+            rel = f.relative_to(mp_path)
+            mediapipe_datas.append((str(f), str(Path('mediapipe') / rel.parent)))
+except ImportError:
+    print("Note: mediapipe not installed, skipping mediapipe bundling")
+
 a = Analysis(
     ['digital_mirror.py'],
     pathex=[],
-    binaries=[],
-    datas=[],
+    binaries=mediapipe_binaries,
+    datas=mediapipe_datas,
     hiddenimports=[
         'cv2',
         'numpy',
         'PySide6.QtCore',
         'PySide6.QtGui',
         'PySide6.QtWidgets',
+        'mediapipe',
+        'mediapipe.tasks',
+        'mediapipe.tasks.c',
+        'mediapipe.tasks.python',
+        'mediapipe.tasks.python.vision',
     ],
     hookspath=[],
     hooksconfig={},
