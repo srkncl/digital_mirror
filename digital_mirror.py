@@ -952,7 +952,8 @@ class DigitalMirrorApp(QMainWindow):
         self.camera = cv2.VideoCapture(idx)
 
         if not self.camera.isOpened():
-            self.camera_widget.setText("❌ Could not open camera\n\nPlease check camera permissions")
+            self.camera_widget.setText("")
+            self._show_permission_prompt()
             return
 
         # Set camera properties for better quality
@@ -963,6 +964,32 @@ class DigitalMirrorApp(QMainWindow):
         self.is_running = True
         self.timer.start(33)  # ~30 FPS
     
+    def _show_permission_prompt(self):
+        """Show a dialog explaining camera permission is needed, with options to open Settings or restart."""
+        import subprocess
+        msg = QMessageBox(self)
+        msg.setIcon(QMessageBox.Icon.Warning)
+        msg.setWindowTitle("Camera Permission Required")
+        msg.setText("Digital Mirror needs camera access to work.")
+        msg.setInformativeText(
+            "Please grant camera permission in System Settings.\n\n"
+            "After enabling the permission, the app must be restarted for the change to take effect."
+        )
+        open_settings_btn = msg.addButton("Open Settings", QMessageBox.ButtonRole.ActionRole)
+        restart_btn = msg.addButton("Restart App", QMessageBox.ButtonRole.AcceptRole)
+        msg.addButton(QMessageBox.StandardButton.Cancel)
+        msg.exec()
+
+        if msg.clickedButton() == open_settings_btn:
+            subprocess.Popen([
+                "open", "x-apple.systempreferences:com.apple.preference.security?Privacy_Camera"
+            ])
+            self.camera_widget.setText("📷 Grant camera permission in System Settings,\nthen click Restart App or relaunch the app.")
+        elif msg.clickedButton() == restart_btn:
+            # Restart the application
+            import os
+            os.execv(sys.executable, [sys.executable] + sys.argv)
+
     def _stop_camera(self):
         """Stop the camera capture."""
         self.is_running = False
