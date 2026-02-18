@@ -31,26 +31,36 @@ def is_ios():
 def get_camera_devices():
     """Get list of available camera devices with their names.
 
+    On macOS, uses AVFoundation to enumerate cameras and filters out
+    disconnected or suspended devices (e.g. inactive FaceTime camera)
+    that would cause cv2.VideoCapture to hang indefinitely.
+
     Returns:
         List of tuples: (index, device_name)
     """
     cameras = []
 
-    # macOS and iOS use AVFoundation
+    # macOS and iOS use AVFoundation for fast, non-blocking camera enumeration
     try:
         import AVFoundation
         devices = AVFoundation.AVCaptureDevice.devicesWithMediaType_(
             AVFoundation.AVMediaTypeVideo
         )
         for i, device in enumerate(devices):
+            # Skip cameras that are not connected or are suspended — opening
+            # these with cv2.VideoCapture blocks indefinitely on macOS.
+            # This matches WebKit's deviceIsAvailable() check.
+            if not device.isConnected():
+                continue
+            if device.isSuspended():
+                continue
             cameras.append((i, device.localizedName()))
     except ImportError:
         # Fallback if AVFoundation not available via PyObjC
         pass
 
-    # Fallback: probe camera indices with OpenCV
+    # Fallback: probe camera indices directly (non-macOS or no PyObjC)
     if not cameras:
-        # On iOS, typically 0 = back camera, 1 = front camera
         camera_names = ["Back Camera", "Front Camera"] if is_ios() else ["Camera 0", "Camera 1"]
         for i in range(2 if is_ios() else 5):
             cap = cv2.VideoCapture(i)
@@ -933,23 +943,23 @@ class DigitalMirrorApp(QMainWindow):
         """Start the camera capture."""
         if self.camera is not None:
             self.camera.release()
-        
+
         # Get selected camera index
         idx = self.camera_combo.currentData()
         if idx is None:
             idx = 0
-        
+
         self.camera = cv2.VideoCapture(idx)
-        
+
         if not self.camera.isOpened():
             self.camera_widget.setText("❌ Could not open camera\n\nPlease check camera permissions")
             return
-        
+
         # Set camera properties for better quality
         self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
         self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
         self.camera.set(cv2.CAP_PROP_FPS, 30)
-        
+
         self.is_running = True
         self.timer.start(33)  # ~30 FPS
     
